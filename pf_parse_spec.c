@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pf_parse_specificator.c                            :+:      :+:    :+:   */
+/*   pf_parse_spec.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/04 21:06:27 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/07 23:18:15 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static	int	check_flag(t_pf_spec *spec, char c)
 #undef CHECK
 #undef COMPOSER
 
-static	int	check_flags(t_pf_spec *spec, t_vs *vs)
+static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va)
 {
 	int	error;
 
@@ -39,22 +39,21 @@ static	int	check_flags(t_pf_spec *spec, t_vs *vs)
 		ft_vsinc(vs, 1);
 	if (error >= 0)
 	{
-		if (ft_vsincif(vs, '*', 1))
-			spec->flags |= PF_FLAG_WIDTH_STAR;
-		else if (IS_DIGIT(ft_vs(vs, 0)))
+		if (ft_vs(vs, 0) == '*' || IS_DIGIT(ft_vs(vs, 0)))
 		{
 			spec->flags |= PF_FLAG_WIDTH;
-			ft_vs_read_uint(vs, &spec->width);
+			if (ft_vsincif(vs, '*', 1))
+				spec->width = ft_max(0, va_arg(va, int));
+			else
+				ft_vs_read_uint(vs, &spec->width);
 		}
 		if (ft_vsincif(vs, '.', 1))
 		{
+			spec->flags |= PF_FLAG_PRECISION;
 			if (ft_vsincif(vs, '*', 1))
-				spec->flags |= PF_FLAG_PRECISION_STAR;
+				spec->precision = ft_max(0, va_arg(va, int));
 			else
-			{
-				spec->flags |= PF_FLAG_PRECISION;
 				error = (ft_vs_read_uint(vs, &spec->precision) == 0 ? -1 : 1);
-			}
 		}
 	}
 	return (error < 0 ? 0 : 1);
@@ -65,25 +64,21 @@ static	int	check_size(t_pf_spec *spec, t_vs *vs)
 	if (ft_vsincif(vs, 'l', 1))
 	{
 		if (ft_vsincif(vs, 'l', 1))
-			spec->size |= PF_SZ_LL;
+			spec->size = PF_SZ_LL;
 		else
-			spec->size |= PF_SZ_L;
+			spec->size = PF_SZ_L;
 	}
 	else if (ft_vsincif(vs, 'h', 1))
 	{
 		if (ft_vsincif(vs, 'h', 1))
-			spec->size |= PF_SZ_HH;
+			spec->size = PF_SZ_HH;
 		else
-			spec->size |= PF_SZ_H;
+			spec->size = PF_SZ_H;
 	}
 	else if (ft_vsincif(vs, 'j', 1))
-		spec->size |= PF_SZ_J;
+		spec->size = PF_SZ_J;
 	else if (ft_vsincif(vs, 'z', 1))
-		spec->size |= PF_SZ_Z;
-	else if (ft_vsincif(vs, 't', 1))
-		spec->size |= PF_SZ_T;
-	else if (ft_vsincif(vs, 'L', 1))
-		spec->size |= PF_SZ_BIGL;
+		spec->size = PF_SZ_Z;
 	return (1);
 }
 
@@ -108,7 +103,7 @@ static	int	check_type(t_pf_spec *spec, t_vs *vs)
 #undef COMPOSER3
 #undef COMPOSER0
 
-t_pf_spec	pf_parse_specificator(t_vs *vs)
+t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 {
 	t_pf_spec	spec;
 	int			success;
@@ -116,7 +111,7 @@ t_pf_spec	pf_parse_specificator(t_vs *vs)
 	spec.flags = 0;
 	spec.size = 0;
 	spec.type = PF_TYPE_NONE;
-	success = check_flags(&spec, vs);
+	success = check_flags(&spec, vs, va);
 	success = success && check_size(&spec, vs);
 	success = success && check_type(&spec, vs);
 	return (spec);
