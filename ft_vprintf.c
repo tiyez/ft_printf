@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 22:55:23 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/05 19:52:13 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/09 02:31:51 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ int				ft_vfprintf(int fd, const char *fmt, va_list va)
 	ft_ddsinit(&dds, PF_DDS_RATE);
 	result = ft_vddsvsprintf(&dds, ft_vscreatestr(fmt), va);
 	i = 0;
-	while (i < dds.dd->len)
+	while (i < dds.dd.len)
 	{
 		s = ft_dds(&dds, i);
-		write(fd, s.ptr, s.len);
+		write(fd, s.m->ptr, s.len);
 		i += 1;
 	}
 	ft_ddsfree(&dds);
@@ -47,10 +47,10 @@ int				ft_vsnprintf(char *out, size_t n, const char *fmt, va_list va)
 		ft_ddsinit(&dds, PF_DDS_RATE);
 		result = ft_vddsvsprintf(&dds, ft_vscreatestr(fmt), va);
 		i = 0;
-		while (n > 0 && i < dds.dd->len)
+		while (n > 0 && i < dds.dd.len)
 		{
 			s = ft_dds(&dds, i);
-			len = ft_strncpy(out, s.ptr, FT_MIN(n, s.len));
+			len = ft_strncpy(out, (char *)s.m->ptr, FT_MIN(n, s.len));
 			out += len;
 			n -= len;
 			i += 1;
@@ -78,7 +78,7 @@ int				ft_vddsvsprintf(t_dds *dds, t_vs fmt, va_list va)
 			if (success)
 			{
 				ft_vsinc(&fmt, 1);
-				success = pf_draw_spec(dds, pf_parse_spec(&fmt), va);
+				success = pf_draw_spec(dds, pf_parse_spec(&fmt, va), va);
 				start = fmt.offset;
 			}
 		}
@@ -87,5 +87,5 @@ int				ft_vddsvsprintf(t_dds *dds, t_vs fmt, va_list va)
 	}
 	if (fmt.offset > start)
 		success = !ft_ddsappend(dds, fmt.ptr + start, fmt.offset - start);
-	return (success ? ft_dds_len(dds) : -1);
+	return (success ? (int)ft_dds_len(dds) : -1);
 }

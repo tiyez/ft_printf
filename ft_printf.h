@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/07 23:16:06 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/08 19:28:37 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define PRINTF_H
 
 # include <libft.h>
+# include <stdarg.h>
+# include <inttypes.h>
+# include <unistd.h>
 
 # define PF_FLAG_MINUS		(1 << 0)
 # define PF_FLAG_PLUS		(1 << 1)
@@ -79,8 +82,8 @@ typedef struct	s_pf_specificator
 	t_ushort	flags;
 	t_ushort	size;
 	t_uint		type;
-	int			width;
-	int			precision;
+	t_uint		width;
+	t_uint		precision;
 }				t_pf_spec;
 
 typedef union	u_pf_value
@@ -103,15 +106,15 @@ size_t			pf_llutostr(t_s *s, t_llu n, int base, const char *sym);
 size_t			pf_lltostr(t_s *s, t_ll n, int base, const char *sym);
 int				pf_doubletostr(char *out, double n, int mode, const char *sym);
 
-int				pf_get_value(t_pf_value &val, t_pf_spec *spec, va_list va);
+int				pf_get_value(t_pf_value *val, t_pf_spec *spec, va_list va);
 t_llu			pf_get_llu(t_pf_value val, t_pf_spec *spec);
 t_ll			pf_get_ll(t_pf_value val, t_pf_spec *spec);
 
 t_pf_spec		pf_parse_spec(t_vs *vs, va_list va);
 
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va);
-int				pf_draw_integer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
-int				pf_draw_double(t_dds *dds, t_pf_spec *spec, va_list va);
+int				pf_draw_integer(t_dds *dds, t_pf_value val, t_pf_spec *spec);
+int				pf_draw_double(t_dds *dds, double val, t_pf_spec *spec);
 
 int				ft_printf(const char *fmt, ...);
 int				ft_fprintf(int fd, const char *fmt, ...);

@@ -6,13 +6,13 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/07 15:32:15 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/07 23:17:00 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/08 19:06:29 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-t_ll		pf_get_ll(t_pf_value *val, t_pf_spec *spec)
+t_ll		pf_get_ll(t_pf_value val, t_pf_spec *spec)
 {
 	long long	n;
 
@@ -20,20 +20,20 @@ t_ll		pf_get_ll(t_pf_value *val, t_pf_spec *spec)
 	if (spec->type == PF_TYPE_D || spec->type == PF_TYPE_I)
 	{
 		if (spec->size == PF_SZ_L)
-			n = (long long)val->ld;
+			n = (long long)val.ld;
 		else if (spec->size == PF_SZ_LL)
-			n = val->lld;
+			n = val.lld;
 		else if (spec->size == PF_SZ_J)
-			n = (long long)val->jd;
+			n = (long long)val.jd;
 		else if (spec->size == PF_SZ_Z)
-			n = (long long)val->zd;
+			n = (long long)val.zd;
 		else
-			n = (long long)val->d;
+			n = (long long)val.d;
 	}
 	return (n);
 }
 
-t_llu		pf_get_llu(t_pf_value *val, t_pf_spec *spec)
+t_llu		pf_get_llu(t_pf_value val, t_pf_spec *spec)
 {
 	unsigned long long	n;
 
@@ -41,15 +41,15 @@ t_llu		pf_get_llu(t_pf_value *val, t_pf_spec *spec)
 	if (spec->type >= PF_TYPE_O && spec->type <= PF_TYPE_BIGX)
 	{
 		if (spec->size == PF_SZ_L)
-			n = (unsigned long long)val->lu;
+			n = (unsigned long long)val.lu;
 		else if (spec->size == PF_SZ_LL)
-			n = val->llu;
+			n = val.llu;
 		else if (spec->size == PF_SZ_J)
-			n = (unsigned long long)val->ju;
+			n = (unsigned long long)val.ju;
 		else if (spec->size == PF_SZ_Z)
-			n = (unsigned long long)val->zu;
+			n = (unsigned long long)val.zu;
 		else
-			n = (unsigned long long)val->u;
+			n = (unsigned long long)val.u;
 	}
 	return (n);
 }

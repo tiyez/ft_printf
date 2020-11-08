@@ -6,11 +6,11 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/07 23:28:49 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/09 01:48:46 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
 static	int		draw_pointer(t_dds *dds, void *ptr)
 {
@@ -20,7 +20,8 @@ static	int		draw_pointer(t_dds *dds, void *ptr)
 	size_t	len;
 	t_err	error;
 
-	ft_sinitm(&s, arr, sizeof(arr));
+	arr[0] = '\0';
+	ft_sinitn(&s, arr, sizeof(arr) - 1);
 	pf_llutostr(&s, (unsigned long long)ptr, 16, "0123456789ABCDEF");
 	error = E_OK;
 	len = 0;
@@ -36,7 +37,9 @@ static	int		draw_pointer(t_dds *dds, void *ptr)
 static int		write_n(t_dds *dds, void *ptr, t_pf_spec *spec)
 {
 	size_t	len;
+	int		success;
 
+	success = 1;
 	len = ft_dds_len(dds);
 	if (spec->size == 0)
 		*(int *)ptr = (int)len;
@@ -52,6 +55,9 @@ static int		write_n(t_dds *dds, void *ptr, t_pf_spec *spec)
 		*(intmax_t *)ptr = (intmax_t)len;
 	else if (spec->size == PF_SZ_Z)
 		*(ssize_t *)ptr = (ssize_t)len;
+	else
+		success = 0;
+	return (success);
 }
 
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)

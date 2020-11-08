@@ -6,14 +6,15 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/06 19:30:56 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/08 18:38:32 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/09 01:48:12 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
 static	int		draw_pre_flags(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 {
+	(void)dds, (void)val, (void)spec;
 	return (1);
 }
 
@@ -21,12 +22,14 @@ static	int		draw_flags(t_dds *dds, t_pf_value val, t_pf_spec *spec, t_s *s)
 {
 	t_err	error;
 
+	(void)dds, (void)val, (void)spec;
 	error = ft_ddsappends(dds, s);
 	return (error == E_OK);
 }
 
 static	int		draw_post_flags(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 {
+	(void)dds, (void)val, (void)spec;
 	return (1);
 }
 
@@ -36,7 +39,8 @@ int				pf_draw_integer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 	t_s		s;
 	int		success;
 
-	ft_sinitm(&s, arr, sizeof(arr));
+	arr[0] = '\0';
+	ft_sinitn(&s, arr, sizeof(arr) - 1);
 	success = 1;
 	if (PF_IS_SIGNED(spec->type))
 		pf_lltostr(&s, pf_get_ll(val, spec), 10, "0123456789");
