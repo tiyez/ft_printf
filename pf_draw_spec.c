@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/09 01:48:46 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/10 20:22:06 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static	int		draw_pointer(t_dds *dds, void *ptr)
 	pf_llutostr(&s, (unsigned long long)ptr, 16, "0123456789ABCDEF");
 	error = E_OK;
 	len = 0;
-	while (error == E_OK && len < (sizeof(void *) * 2 - s.len))
+	while (error == E_OK && len < (sizeof(void *) * 2 - s.m->len))
 		arrz[len++] = '0';
 	arrz[len] = '\0';
 	error = ft_ddsappend(dds, arrz, len);

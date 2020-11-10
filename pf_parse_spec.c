@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/07 23:18:15 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/10 22:58:12 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 	spec.flags = 0;
 	spec.size = 0;
 	spec.type = PF_TYPE_NONE;
+	spec.width = 0;
+	spec.precision = 0;
 	success = check_flags(&spec, vs, va);
 	success = success && check_size(&spec, vs);
 	success = success && check_type(&spec, vs);

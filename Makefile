@@ -14,20 +14,20 @@ ft_vprintf.c\
 ft_printf.c
 OBJ=$(SRC:.c=.o)
 
-all: $(NAME)
+all: $(LIBFT) $(NAME)
 
 %.o: %.c ft_printf.h
 	gcc -c -Wall -Wextra -Werror -Ilibft $< -o $@ -g
 
-$(NAME): $(LIBFT) $(OBJ)
+$(NAME): $(OBJ)
 	ar rc $(NAME) $?
 
 $(LIBFT):
 	$(MAKE) -C libft/ d
+	ar rc $(NAME) libft/*.o
 
 clean:
 	rm -rf $(OBJ)
-	rm -rf add
 	$(MAKE) -C libft/ clean
 
 fclean: clean

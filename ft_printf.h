@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/08 19:28:37 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/10 23:25:33 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 # define PF_IS_INTEGER(d) ((d) >= PF_TYPE_D && (d) <= PF_TYPE_BIGX)
 # define PF_IS_SIGNED(d) ((d) >= PF_TYPE_D && (d) <= PF_TYPE_I)
 # define PF_IS_UNSIGNED(d) ((d) >= PF_TYPE_O && (d) <= PF_TYPE_BIGX)
+# define PF_IS_DECIMAL(d) (PF_IS_SIGNED(d) || (d) == PF_TYPE_U)
 
 # define PF_TYPE_F		7
 # define PF_TYPE_BIGF	8

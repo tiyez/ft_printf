@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 22:55:23 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/09 02:31:51 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/10 20:23:52 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int				ft_vfprintf(int fd, const char *fmt, va_list va)
 	while (i < dds.dd.len)
 	{
 		s = ft_dds(&dds, i);
-		write(fd, s.m->ptr, s.len);
+		write(fd, s.m->ptr, s.m->len);
 		i += 1;
 	}
 	ft_ddsfree(&dds);
@@ -50,7 +50,7 @@ int				ft_vsnprintf(char *out, size_t n, const char *fmt, va_list va)
 		while (n > 0 && i < dds.dd.len)
 		{
 			s = ft_dds(&dds, i);
-			len = ft_strncpy(out, (char *)s.m->ptr, FT_MIN(n, s.len));
+			len = ft_strncpy(out, (char *)s.m->ptr, FT_MIN(n, s.m->len));
 			out += len;
 			n -= len;
 			i += 1;
