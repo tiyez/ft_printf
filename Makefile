@@ -34,4 +34,8 @@ fclean: clean
 	rm -rf $(NAME)
 	$(MAKE) -C libft/ fclean
 
+test: $(NAME)
+	gcc -I. -Ilibft test.c libftprintf.a -g
+	./a.out
+
 re: fclean all

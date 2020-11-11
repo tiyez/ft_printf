@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/10 23:25:33 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 03:39:53 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define PF_FLAG_ZERO		(1 << 4)
 # define PF_FLAG_WIDTH		(1 << 5)
 # define PF_FLAG_PRECISION	(1 << 6)
+
+# define PF_FLAG(spec,flg) ((spec)->flags & PF_FLAG_##flg)
 
 # define PF_SZ_L	1
 # define PF_SZ_HH	2

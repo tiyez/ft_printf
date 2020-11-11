@@ -6,33 +6,11 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/10 20:22:06 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 05:47:15 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-static	int		draw_pointer(t_dds *dds, void *ptr)
-{
-	char	arr[17];
-	char	arrz[17];
-	t_s		s;
-	size_t	len;
-	t_err	error;
-
-	arr[0] = '\0';
-	ft_sinitn(&s, arr, sizeof(arr) - 1);
-	pf_llutostr(&s, (unsigned long long)ptr, 16, "0123456789ABCDEF");
-	error = E_OK;
-	len = 0;
-	while (error == E_OK && len < (sizeof(void *) * 2 - s.m->len))
-		arrz[len++] = '0';
-	arrz[len] = '\0';
-	error = ft_ddsappend(dds, arrz, len);
-	if (error == E_OK)
-		error = ft_ddsappends(dds, &s);
-	return (error == E_OK);
-}
 
 static int		write_n(t_dds *dds, void *ptr, t_pf_spec *spec)
 {
@@ -60,6 +38,49 @@ static int		write_n(t_dds *dds, void *ptr, t_pf_spec *spec)
 	return (success);
 }
 
+static int		draw_str(t_dds *dds, char *str, t_pf_spec *spec, char *nullstr)
+{
+	int		success;
+	t_vs	vs;
+
+	vs = ft_vscreatestr(str ? str : nullstr);
+	success = 1;
+	if (PF_FLAG(spec, PRECISION))
+		vs.len = FT_MIN(vs.len, spec->precision);
+	if (!str && vs.len < 6)
+		vs.len = 0;
+	if (PF_FLAG(spec, WIDTH) && !PF_FLAG(spec, MINUS))
+		success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, vs.len));
+	success = success && ft_ddsappendvs(dds, &vs) == E_OK;
+	if (success && PF_FLAG(spec, WIDTH) && PF_FLAG(spec, MINUS))
+		success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, vs.len));
+	return (success);
+}
+
+static	int		draw_pointer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
+{
+	int		success;
+
+	if (val.p == NULL)
+	{
+		success = 1;
+		if (PF_FLAG(spec, WIDTH) && !PF_FLAG(spec, MINUS))
+			success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, 5));
+		success = success && ft_ddsappend(dds, "(nil)", 5) == E_OK;
+		if (success && PF_FLAG(spec, WIDTH) && PF_FLAG(spec, MINUS))
+			success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, 5));
+	}
+	else
+	{
+		val.zu = (size_t)val.p;
+		spec->type = PF_TYPE_X;
+		spec->size = PF_SZ_Z;
+		spec->flags |= PF_FLAG_HASH;
+		success = pf_draw_integer(dds, val, spec);
+	}
+	return (success);
+}
+
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 {
 	int			success;
@@ -77,9 +98,9 @@ int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 		else if (spec.type == PF_TYPE_C)
 			success = (ft_ddsappendc(dds, (char)value.d) == E_OK);
 		else if (spec.type == PF_TYPE_S)
-			success = (ft_ddsappendstr(dds, (char *)value.p) == E_OK);
+			success = draw_str(dds, (char *)value.p, &spec, "(null)");
 		else if (spec.type == PF_TYPE_P)
-			success = draw_pointer(dds, value.p);
+			success = draw_pointer(dds, value, &spec);
 		else if (spec.type == PF_TYPE_N)
 			success = write_n(dds, value.p, &spec);
 	}

@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/07 15:32:15 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/08 19:06:29 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 04:41:11 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int			pf_get_value(t_pf_value *val, t_pf_spec *spec, va_list va)
 	int success;
 
 	success = 1;
+	val->p = NULL;
 	if (PF_IS_SIGNED(spec->type))
 		get_signed_value(val, spec, va);
 	else if (PF_IS_UNSIGNED(spec->type))

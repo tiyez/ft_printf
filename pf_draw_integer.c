@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/06 19:30:56 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/10 23:31:54 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 03:28:41 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int				pf_draw_integer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 		pf_llutostr(&s, pf_get_llu(val, spec), 16, "0123456789ABCDEF");
 	else
 		success = 0;
+	if (FLAG(PRECISION) && !spec->precision && s.m->len == 1 && arr[0] == '0')
+		s.m->len -= 1;
 	success = draw(dds, val, spec, s.m);
 	return (success);
 }

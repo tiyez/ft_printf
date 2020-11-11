@@ -6,14 +6,14 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/10 22:58:12 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 04:34:32 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
 #define OP(op,flg) spec->flags op PF_FLAG_##flg
-#define BR(flg) {if(OP(&,flg))success=-1;else success=1;OP(|=,flg);}
+#define BR(flg) {if(OP(&,flg))success=1;else success=1;OP(|=,flg);}
 #define CHECK(ch,flg) if (c == ch) BR(flg) else
 #define COMPOSER(c) c('-',MINUS)c('+',PLUS)c(' ',SPACE)c('#',HASH)c('0',ZERO){}
 
@@ -52,8 +52,8 @@ static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va)
 			spec->flags |= PF_FLAG_PRECISION;
 			if (ft_vsincif(vs, '*', 1))
 				spec->precision = ft_max(0, va_arg(va, int));
-			else
-				error = (ft_vs_read_uint(vs, &spec->precision) == 0 ? -1 : 1);
+			else if (IS_DIGIT(ft_vs(vs, 0)))
+				ft_vs_read_uint(vs, &spec->precision);
 		}
 	}
 	return (error < 0 ? 0 : 1);
