@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/06 19:30:56 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/11 03:28:41 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:57:24 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ static	int		draw(t_dds *dds, t_pf_value val, t_pf_spec *spec, t_m *m)
 	sign = PF_IS_DECIMAL(spec->type) ? TERN(is_value_negative(val, spec), '-',
 		TERN(FLAG(PLUS), '+', TERN(FLAG(SPACE), ' ', 0))) : 0;
 	prepend = FLAG(ZERO) && !FLAG(PRECISION) ? '0' : ' ';
-	res = prepend == '0' && sign ? (ft_ddsappendc(dds, sign) == E_OK) : 1;
+	res = prepend == '0' && sign ? (ft_ddsappend(dds, &sign, 1) == E_OK) : 1;
 	res = prepend == '0' ? (ft_ddsappendvs(dds, &hash) == E_OK) : res;
 	wordlen = m->len + !!sign + hash.len + FT_USUB(spec->precision, m->len);
 	res = FLAG(WIDTH) && !FLAG(MINUS) && spec->width > wordlen ?
 		ft_dds_spread(dds, prepend, spec->width - wordlen) == E_OK : res;
-	res = prepend == ' ' && sign ? (ft_ddsappendc(dds, sign) == E_OK) : res;
+	res = prepend == ' ' && sign ? (ft_ddsappend(dds, &sign, 1) == E_OK) : res;
 	res = prepend == ' ' ? (ft_ddsappendvs(dds, &hash) == E_OK) : res;
 	res = FLAG(PRECISION) ? ft_dds_spread(dds, '0',
 		FT_USUB(spec->precision, m->len)) == E_OK : res;

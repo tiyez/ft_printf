@@ -6,32 +6,33 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/11 04:34:32 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 18:27:33 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-#define OP(op,flg) spec->flags op PF_FLAG_##flg
-#define BR(flg) {if(OP(&,flg))success=1;else success=1;OP(|=,flg);}
-#define CHECK(ch,flg) if (c == ch) BR(flg) else
-#define COMPOSER(c) c('-',MINUS)c('+',PLUS)c(' ',SPACE)c('#',HASH)c('0',ZERO){}
-
 static	int	check_flag(t_pf_spec *spec, char c)
 {
 	int	success;
 
-	success = 0;
-	COMPOSER(CHECK);
+	success = 1;
+	if (c == '-')
+		spec->flags |= PF_FLAG_MINUS;
+	else if (c == '+')
+		spec->flags |= PF_FLAG_PLUS;
+	else if (c == ' ')
+		spec->flags |= PF_FLAG_SPACE;
+	else if (c == '#')
+		spec->flags |= PF_FLAG_HASH;
+	else if (c == '0')
+		spec->flags |= PF_FLAG_ZERO;
+	else
+		success = 0;
 	return (success);
 }
 
-#undef OP
-#undef BR
-#undef CHECK
-#undef COMPOSER
-
-static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va)
+static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va, int *w, int *p)
 {
 	int	error;
 
@@ -42,18 +43,19 @@ static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va)
 		if (ft_vs(vs, 0) == '*' || IS_DIGIT(ft_vs(vs, 0)))
 		{
 			spec->flags |= PF_FLAG_WIDTH;
-			if (ft_vsincif(vs, '*', 1))
-				spec->width = ft_max(0, va_arg(va, int));
-			else
-				ft_vs_read_uint(vs, &spec->width);
+			*w = ft_vsincif(vs, '*', 1) ? va_arg(va, int) : 
+				(ft_vs_read_uint(vs, &spec->width), (int)spec->width);
+			spec->flags |= *w < 0 ? PF_FLAG_MINUS : 0;
+			spec->width = *w < 0 ? -*w : *w;
 		}
 		if (ft_vsincif(vs, '.', 1))
 		{
 			spec->flags |= PF_FLAG_PRECISION;
-			if (ft_vsincif(vs, '*', 1))
-				spec->precision = ft_max(0, va_arg(va, int));
-			else if (IS_DIGIT(ft_vs(vs, 0)))
-				ft_vs_read_uint(vs, &spec->precision);
+			*p = ft_vsincif(vs, '*', 1) ? va_arg(va, int) :
+				(ft_vs_read_uint(vs, &spec->precision), (int)spec->precision);
+			if (*p < 0)
+				spec->flags &= ~(PF_FLAG_PRECISION);
+			spec->precision = *p < 0 ? -*p : *p;
 		}
 	}
 	return (error < 0 ? 0 : 1);
@@ -107,13 +109,15 @@ t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 {
 	t_pf_spec	spec;
 	int			success;
+	int			w;
+	int			p;
 
 	spec.flags = 0;
 	spec.size = 0;
 	spec.type = PF_TYPE_NONE;
 	spec.width = 0;
 	spec.precision = 0;
-	success = check_flags(&spec, vs, va);
+	success = check_flags(&spec, vs, va, &w, &p);
 	success = success && check_size(&spec, vs);
 	success = success && check_type(&spec, vs);
 	return (spec);

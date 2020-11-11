@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/11 05:47:15 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/11 17:47:23 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ static int		write_n(t_dds *dds, void *ptr, t_pf_spec *spec)
 	return (success);
 }
 
-static int		draw_str(t_dds *dds, char *str, t_pf_spec *spec, char *nullstr)
+static int		draw_str(t_dds *dds, char *str, t_pf_spec *spec)
 {
 	int		success;
 	t_vs	vs;
 
-	vs = ft_vscreatestr(str ? str : nullstr);
+	vs = ft_vscreatestr(str ? str : "(null)");
 	success = 1;
 	if (PF_FLAG(spec, PRECISION))
 		vs.len = FT_MIN(vs.len, spec->precision);
@@ -80,6 +80,18 @@ static	int		draw_pointer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 	}
 	return (success);
 }
+static	int		draw_char(t_dds *dds, char c, t_pf_spec *spec)
+{
+	int		success;
+
+	success = 1;
+	if (PF_FLAG(spec, WIDTH) && !PF_FLAG(spec, MINUS))
+		success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, 1));
+	success = success && ft_ddsappendraw(dds, &c, 1) == E_OK;
+	if (success && PF_FLAG(spec, WIDTH) && PF_FLAG(spec, MINUS))
+		success = !ft_dds_spread(dds, ' ', FT_USUB(spec->width, 1));
+	return (success);
+}
 
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 {
@@ -96,9 +108,9 @@ int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 		else if (PF_IS_DOUBLE(spec.type))
 			success = pf_draw_double(dds, value.f, &spec);
 		else if (spec.type == PF_TYPE_C)
-			success = (ft_ddsappendc(dds, (char)value.d) == E_OK);
+			success = draw_char(dds, value.d, &spec);
 		else if (spec.type == PF_TYPE_S)
-			success = draw_str(dds, (char *)value.p, &spec, "(null)");
+			success = draw_str(dds, (char *)value.p, &spec);
 		else if (spec.type == PF_TYPE_P)
 			success = draw_pointer(dds, value, &spec);
 		else if (spec.type == PF_TYPE_N)
