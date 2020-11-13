@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/11 17:47:23 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/14 00:37:43 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 		if (PF_IS_INTEGER(spec.type))
 			success = pf_draw_integer(dds, value, &spec);
 		else if (PF_IS_DOUBLE(spec.type))
-			success = pf_draw_double(dds, value.f, &spec);
+			success = pf_draw_double(dds, value, &spec);
 		else if (spec.type == PF_TYPE_C)
 			success = draw_char(dds, value.d, &spec);
 		else if (spec.type == PF_TYPE_S)

@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/11 18:27:33 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/13 20:24:14 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static	int	check_size(t_pf_spec *spec, t_vs *vs)
 	return (1);
 }
 
-#define CHECK(c,f) if(ft_vsincif(vs,c,1))spec->type=PF_TYPE_##f;else
+#define CHECK(c,f) if (ft_vsincif(vs, c, 1)) spec->type = PF_TYPE_##f; else
 #define COMPOSER(c) c('d',D)c('i',I)c('o',O)c('u',U)c('x',X)c('X',BIGX)c('f',F)
 #define COMPOSER2(c) c('F',BIGF)c('e',E)c('E',BIGE)c('g',G)c('G',BIGG)c('a',A)
 #define COMPOSER3(c) c('A',BIGA)c('c',C)c('s',S)c('p',P)c('n',N)c('%',PERCENT)
@@ -120,5 +120,7 @@ t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 	success = check_flags(&spec, vs, va, &w, &p);
 	success = success && check_size(&spec, vs);
 	success = success && check_type(&spec, vs);
+	if (!(spec.flags & PF_FLAG_PRECISION) && PF_IS_DOUBLE(spec.type))
+		spec.precision = 6;
 	return (spec);
 }

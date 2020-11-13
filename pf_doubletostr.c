@@ -1,51 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pf_lltostr.c                                       :+:      :+:    :+:   */
+/*   pf_doubletostr.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/05 20:42:51 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/13 20:31:15 by jsandsla         ###   ########.fr       */
+/*   Created: 2020/11/13 20:24:24 by jsandsla          #+#    #+#             */
+/*   Updated: 2020/11/14 00:42:40 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-size_t			pf_llutostr(t_s *s, unsigned long long n, int base,
-	const char *sym)
+static t_ll		own_llabs(t_ll ll)
+{
+	return (ll < 0 ? -ll : ll);
+}
+
+int				pf_double_whole_part(t_s *s, double f, t_pf_notation not)
 {
 	size_t	start;
 
 	start = s->m->len;
-	if (!n)
-		ft_sappendc(s, sym[0]);
-	while (n > 0)
+	if (f < 1.0)
+		ft_sappendc(s, not.sym[0]);
+	while (f >= 1.0)
 	{
-		ft_sappendc(s, sym[n % base]);
-		n /= base;
+		ft_sappendc(s, not.sym[own_llabs((t_ll)f) % not.base]);
+		f /= not.base;
 	}
 	if (s->m->len - start)
 		ft_sreverse(s, start, s->m->len - start);
 	return (s->m->len - start);
 }
 
-size_t			absolute(long long n)
-{
-	return (n < 0 ? -n : n);
-}
-
-size_t			pf_lltostr(t_s *s, long long n, int base, const char *sym)
+int				pf_double_frac_part(t_s *s, double f, t_pf_notation not,
+	size_t precision)
 {
 	size_t	start;
 
 	start = s->m->len;
-	if (!n)
-		ft_sappendc(s, sym[0]);
-	while (n != 0)
+	while (precision > 0)
 	{
-		ft_sappendc(s, sym[absolute(n % base)]);
-		n /= base;
+		f *= not.base;
+		ft_sappendc(s, not.sym[llabs((t_ll)f) % not.base]);
+		precision -= 1;
 	}
 	if (s->m->len - start)
 		ft_sreverse(s, start, s->m->len - start);
