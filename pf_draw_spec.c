@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/05 19:52:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/14 00:37:43 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/15 07:44:54 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ static int		draw_str(t_dds *dds, char *str, t_pf_spec *spec)
 	return (success);
 }
 
-static	int		draw_pointer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
+static	int		draw_pointer(t_dds *dds, t_pf_spec *spec)
 {
 	int		success;
 
-	if (val.p == NULL)
+	if (spec->val.p == NULL)
 	{
 		success = 1;
 		if (PF_FLAG(spec, WIDTH) && !PF_FLAG(spec, MINUS))
@@ -72,11 +72,11 @@ static	int		draw_pointer(t_dds *dds, t_pf_value val, t_pf_spec *spec)
 	}
 	else
 	{
-		val.zu = (size_t)val.p;
+		spec->val.zu = (size_t)spec->val.p;
 		spec->type = PF_TYPE_X;
 		spec->size = PF_SZ_Z;
 		spec->flags |= PF_FLAG_HASH;
-		success = pf_draw_integer(dds, val, spec);
+		success = pf_draw_integer(dds, spec);
 	}
 	return (success);
 }
@@ -96,25 +96,24 @@ static	int		draw_char(t_dds *dds, char c, t_pf_spec *spec)
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va)
 {
 	int			success;
-	t_pf_value	value;
 
 	success = 0;
 	if (spec.type == PF_TYPE_PERCENT)
 		success = (ft_ddsappend(dds, "%", 1) == E_OK);
-	else if ((success = pf_get_value(&value, &spec, va)))
+	else if ((success = pf_get_value(&spec, va)))
 	{
 		if (PF_IS_INTEGER(spec.type))
-			success = pf_draw_integer(dds, value, &spec);
+			success = pf_draw_integer(dds, &spec);
 		else if (PF_IS_DOUBLE(spec.type))
-			success = pf_draw_double(dds, value, &spec);
+			success = pf_draw_double(dds, &spec);
 		else if (spec.type == PF_TYPE_C)
-			success = draw_char(dds, value.d, &spec);
+			success = draw_char(dds, spec.val.d, &spec);
 		else if (spec.type == PF_TYPE_S)
-			success = draw_str(dds, (char *)value.p, &spec);
+			success = draw_str(dds, (char *)spec.val.p, &spec);
 		else if (spec.type == PF_TYPE_P)
-			success = draw_pointer(dds, value, &spec);
+			success = draw_pointer(dds, &spec);
 		else if (spec.type == PF_TYPE_N)
-			success = write_n(dds, value.p, &spec);
+			success = write_n(dds, spec.val.p, &spec);
 	}
 	return (success);
 }

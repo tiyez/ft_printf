@@ -6,40 +6,44 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 01:19:38 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/14 01:21:36 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/15 07:47:17 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static	int		is_value_negative(t_pf_value val, t_pf_spec *spec)
+static	int		is_value_negative(t_pf_spec *spec)
 {
-	int		result;
+	int			result;
+	t_ieee754	ieee754;
 
 	result = 0;
 	if (PF_IS_SIGNED(spec->type))
 	{
 		if (spec->size == PF_SZ_L)
-			result = val.ld < 0;
+			result = spec->val.ld < 0;
 		else if (spec->size == PF_SZ_LL)
-			result = val.lld < 0;
+			result = spec->val.lld < 0;
 		else if (spec->size == PF_SZ_J)
-			result = val.jd < 0;
+			result = spec->val.jd < 0;
 		else if (spec->size == PF_SZ_Z)
-			result = val.zd < 0;
+			result = spec->val.zd < 0;
 		else
-			result = val.d < 0;
+			result = spec->val.d < 0;
 	}
 	else if (PF_IS_DOUBLE(spec->type))
-		result = val.f < 0;
+	{
+		ieee754.f = spec->val.f;
+		result = ieee754.u >> 63;
+	}
 	return (result);
 }
 
-t_vs			pf_sign(t_pf_value val, t_pf_spec *spec)
+t_vs			pf_sign(t_pf_spec *spec)
 {
 	t_vs	vs;
 
-	if (is_value_negative(val, spec))
+	if (is_value_negative(spec))
 		vs = ft_vscreatestr("-");
 	else if (spec->type == PF_TYPE_O && (spec->flags & PF_FLAG_HASH))
 		vs = ft_vscreatestr("0");
@@ -56,14 +60,13 @@ t_vs			pf_sign(t_pf_value val, t_pf_spec *spec)
 	return (vs);
 }
 
-int				pf_prepend_zero(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec)
+int				pf_prepend_zero(t_dds *dds, size_t len, t_pf_spec *spec)
 {
 	t_vs	sign;
 	int		success;
 
 	success = 1;
-	sign = pf_sign(val, spec);
+	sign = pf_sign(spec);
 	if (spec->flags & PF_FLAG_WIDTH && spec->flags & PF_FLAG_ZERO &&
 		(!(spec->flags & PF_FLAG_PRECISION) || PF_IS_DOUBLE(spec->type)) &&
 		!(spec->flags & PF_FLAG_MINUS))
@@ -75,15 +78,14 @@ int				pf_prepend_zero(t_dds *dds, t_pf_value val, size_t len,
 	return (success);
 }
 
-int				pf_prepend_space(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec)
+int				pf_prepend_space(t_dds *dds, size_t len, t_pf_spec *spec)
 {
 	t_vs	sign;
 	int		success;
 	size_t	wordlen;
 
 	success = 1;
-	sign = pf_sign(val, spec);
+	sign = pf_sign(spec);
 	wordlen = len + sign.len + (PF_IS_INTEGER(spec->type) ?
 		FT_USUB(spec->precision, len) : 0);
 	if (spec->width > wordlen && !(spec->flags & PF_FLAG_MINUS) &&
@@ -97,15 +99,14 @@ int				pf_prepend_space(t_dds *dds, t_pf_value val, size_t len,
 	return (success);
 }
 
-int				pf_append_space(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec)
+int				pf_append_space(t_dds *dds, size_t len, t_pf_spec *spec)
 {
 	t_vs	sign;
 	int		success;
 	size_t	wordlen;
 
 	success = 1;
-	sign = pf_sign(val, spec);
+	sign = pf_sign(spec);
 	wordlen = len + sign.len + (PF_IS_INTEGER(spec->type) ?
 		FT_USUB(spec->precision, len) : 0);
 	if (spec->flags & PF_FLAG_WIDTH && spec->flags & PF_FLAG_MINUS &&

@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/14 00:36:48 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/15 08:36:30 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,6 @@
 typedef unsigned long long	t_llu;
 typedef long long	t_ll;
 
-typedef struct	s_pf_specificator
-{
-	t_ushort	flags;
-	t_ushort	size;
-	t_uint		type;
-	t_uint		width;
-	t_uint		precision;
-}				t_pf_spec;
-
 typedef union	u_pf_value
 {
 	int					d;
@@ -108,6 +99,16 @@ typedef union	u_pf_value
 	void				*p;
 }				t_pf_value;
 
+typedef struct	s_pf_specificator
+{
+	t_ushort	flags;
+	t_ushort	size;
+	t_uint		type;
+	t_uint		width;
+	t_uint		precision;
+	t_pf_value	val;
+}				t_pf_spec;
+
 typedef struct	s_pf_notation
 {
 	size_t		base;
@@ -115,30 +116,27 @@ typedef struct	s_pf_notation
 }				t_pf_notation;
 
 # define PF_NOTATION(base, syms) ((t_pf_notation){base, syms})
+# define PF_DECNOT PF_NOTATION(10, "0123456789")
 
 size_t			pf_llutostr(t_s *s, t_llu n, t_pf_notation not);
 size_t			pf_lltostr(t_s *s, t_ll n, t_pf_notation not);
-int				pf_double_whole_part(t_s *s, double f, t_pf_notation not);
-int				pf_double_frac_part(t_s *s, double f, t_pf_notation not,
-	size_t precision);
+int				pf_double_whole_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
+int				pf_double_fract_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
 
-int				pf_get_value(t_pf_value *val, t_pf_spec *spec, va_list va);
-t_llu			pf_get_llu(t_pf_value val, t_pf_spec *spec);
-t_ll			pf_get_ll(t_pf_value val, t_pf_spec *spec);
+int				pf_get_value(t_pf_spec *spec, va_list va);
+t_llu			pf_get_llu(t_pf_spec *spec);
+t_ll			pf_get_ll(t_pf_spec *spec);
 
-t_vs			pf_sign(t_pf_value val, t_pf_spec *spec);
-int				pf_prepend_zero(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec);
-int				pf_prepend_space(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec);
-int				pf_append_space(t_dds *dds, t_pf_value val, size_t len,
-	t_pf_spec *spec);
+t_vs			pf_sign(t_pf_spec *spec);
+int				pf_prepend_zero(t_dds *dds, size_t len, t_pf_spec *spec);
+int				pf_prepend_space(t_dds *dds, size_t len, t_pf_spec *spec);
+int				pf_append_space(t_dds *dds, size_t len, t_pf_spec *spec);
 
 t_pf_spec		pf_parse_spec(t_vs *vs, va_list va);
 
 int				pf_draw_spec(t_dds *dds, t_pf_spec spec, va_list va);
-int				pf_draw_integer(t_dds *dds, t_pf_value val, t_pf_spec *spec);
-int				pf_draw_double(t_dds *dds, t_pf_value val, t_pf_spec *spec);
+int				pf_draw_integer(t_dds *dds, t_pf_spec *spec);
+int				pf_draw_double(t_dds *dds, t_pf_spec *spec);
 
 int				ft_printf(const char *fmt, ...);
 int				ft_fprintf(int fd, const char *fmt, ...);
