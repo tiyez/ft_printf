@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/08 19:28:30 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/15 09:19:16 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/17 06:11:31 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int				pf_draw_double(t_dds *dds, t_pf_spec *sp)
 
 	ft_sinitraw(&whl, mem, BUFSZ);
 	ft_sinitraw(&frc, mem + BUFSZ + 1, BUFSZ);
-	success = pf_double_fract_part(&frc, sp, PF_DECNOT);
-	success = success && pf_double_whole_part(&whl, sp, PF_DECNOT);
+	success = pf_double_fract(&frc, ft_modf_rounded(sp->val.f, &sp->val.f, sp->precision), PF_DECNOT, sp->precision);
+	success = success && pf_double(&whl, sp->val.f, PF_DECNOT);
 	if (PF_DOUBLE_MODE(sp->type) == PF_DOUBLE_MODE_F)
 		success = f_draw(dds, &whl, &frc, sp);
 	else if (PF_DOUBLE_MODE(sp->type) == PF_DOUBLE_MODE_G)

@@ -6,44 +6,13 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 20:24:24 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/15 09:23:46 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/17 06:19:11 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static const double	g_double_powers[] = {
-	1.0,
-	10.0,
-	100.0,
-	1000.0,
-	10000.0,
-	100000.0,
-	1000000.0,
-	10000000.0,
-	100000000.0,
-	1000000000.0,
-	10000000000.0,
-	100000000000.0,
-	1000000000000.0,
-	10000000000000.0,
-	100000000000000.0,
-	1000000000000000.0,
-	10000000000000000.0,
-};
-
-static	double	round_double(double d, int precision)
-{
-	double	db;
-	double	fr;
-
-	db = d * g_double_powers[precision];
-	fr = (db - (t_ll)db);
-	db = fr >= 0.5 ? db - fr + 1 : db - fr;
-	db /= g_double_powers[precision];
-	return (db);
-}
-
+#if 0
 int				pf_double_whole_part(t_s *s, t_pf_spec *sp, t_pf_notation not)
 {
 	size_t	start;
@@ -88,5 +57,50 @@ int				pf_double_fract_part(t_s *s, t_pf_spec *sp, t_pf_notation not)
 			% not.base]);
 		i += 1;
 	}
+	return (1);
+}
+#endif
+#include <stdio.h>
+int		pf_double(t_s *s, double f, t_pf_notation not)
+{
+	double	power;
+	size_t	start;
+
+	f = ft_fabs(f);
+	start = s->m->len;
+	power = 1.0;
+	// printf(":%f\n", f);
+	if (f < power)
+		ft_sappendc(s, not.sym[0]);
+	while (f >= power && s->m->len + 1 < s->m->cap)
+	{
+		ft_sappendc(s, not.sym[(t_ll)(f / power) % not.base]);
+		power *= not.base;
+	}
+	if (s->m->len - start)
+		ft_sreverse(s, start, s->m->len - start);
+	return (1);
+}
+
+int		pf_double_fract(t_s *s, double f, t_pf_notation not, size_t precision)
+{
+	double	power;
+	size_t	start;
+
+	f = ft_fabs(f);
+	start = s->m->len;
+	power = 1.0;
+	// printf(":%f\n", f);
+	if (f < power)
+		ft_sappendc(s, not.sym[0]);
+	while (f >= power && s->m->len + 1 < s->m->cap)
+	{
+		ft_sappendc(s, not.sym[(t_ll)(f / power) % not.base]);
+		power *= not.base;
+	}
+	while (s->m->len - start < precision && s->m->len + 1 < s->m->cap)
+		ft_sappendc(s, not.sym[0]);
+	if (s->m->len - start)
+		ft_sreverse(s, start, s->m->len - start);
 	return (1);
 }

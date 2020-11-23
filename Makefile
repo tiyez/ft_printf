@@ -19,7 +19,7 @@ OBJ=$(SRC:.c=.o)
 all: $(LIBFT) $(NAME)
 
 %.o: %.c ft_printf.h
-	gcc -c -Wall -Wextra -Werror -Ilibft $< -o $@ $(DEBUG_CFLAGS)
+	gcc -c -Wall -Wextra -Werror -Ilibft $< -o $@ $(DEBUG)
 
 $(NAME): $(OBJ)
 	ar rc $(NAME) $?

@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/15 08:36:30 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/17 06:11:10 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,10 @@ typedef struct	s_pf_notation
 
 size_t			pf_llutostr(t_s *s, t_llu n, t_pf_notation not);
 size_t			pf_lltostr(t_s *s, t_ll n, t_pf_notation not);
-int				pf_double_whole_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
-int				pf_double_fract_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
+// int				pf_double_whole_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
+// int				pf_double_fract_part(t_s *s, t_pf_spec *sp, t_pf_notation not);
+int				pf_double(t_s *s, double f, t_pf_notation not);
+int				pf_double_fract(t_s *s, double f, t_pf_notation not, size_t precision);
 
 int				pf_get_value(t_pf_spec *spec, va_list va);
 t_llu			pf_get_llu(t_pf_spec *spec);
