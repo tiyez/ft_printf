@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:17 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/24 12:20:57 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 13:19:52 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@
 #  define PF_DDS_RATE 256
 # endif
 
-#define BUFSZ 128
-#define FBUFSZ (BUFSZ * 2 + 1)
+# define BUFSZ 128
+# define FBUFSZ (BUFSZ * 2 + 1)
 
 typedef unsigned long long	t_llu;
 typedef long long	t_ll;
