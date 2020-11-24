@@ -6,13 +6,13 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 22:55:23 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/10 20:23:52 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 12:21:45 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int				ft_vfprintf(int fd, const char *fmt, va_list va)
+int				ft_vdprintf(int fd, const char *fmt, va_list va)
 {
 	t_dds	dds;
 	int		result;

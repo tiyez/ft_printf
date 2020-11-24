@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/06 19:30:56 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/15 07:40:22 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 11:43:10 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@ static	int		draw(t_dds *dds, t_pf_spec *spec, t_m *m)
 	return (res);
 }
 
-static int		special_cases(t_pf_spec *spec, t_s *s) {
+static	int		special_cases(t_pf_spec *spec, t_s *s)
+{
 	if (spec->flags & PF_FLAG_PRECISION && !spec->precision &&
 		s->m->len == 1 && spec->val.p == NULL)
 		s->m->len -= 1;
 	if (spec->flags & PF_FLAG_HASH && !PF_IS_DECIMAL(spec->type) &&
-		spec->val.p == NULL)
+		spec->type != PF_TYPE_P && spec->val.p == NULL)
 		spec->flags &= ~PF_FLAG_HASH;
 	return (1);
 }
@@ -47,7 +48,7 @@ int				pf_draw_integer(t_dds *dds, t_pf_spec *spec)
 		pf_llutostr(&s, pf_get_llu(spec), PF_NOTATION(10, "0123456789"));
 	else if (spec->type == PF_TYPE_O)
 		pf_llutostr(&s, pf_get_llu(spec), PF_NOTATION(8, "01234567"));
-	else if (spec->type == PF_TYPE_X)
+	else if (spec->type == PF_TYPE_X || spec->type == PF_TYPE_P)
 		pf_llutostr(&s, pf_get_llu(spec), PF_NOTATION(16,
 			"0123456789abcdef"));
 	else if (spec->type == PF_TYPE_BIGX)

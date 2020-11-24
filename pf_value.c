@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/07 15:32:15 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/15 07:46:13 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 11:01:58 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_llu		pf_get_llu(t_pf_spec *spec)
 		else
 			n = (unsigned long long)spec->val.u;
 	}
+	else if (spec->type == PF_TYPE_P)
+		n = (unsigned long long)spec->val.zu;
 	return (n);
 }
 

@@ -12,6 +12,7 @@ pf_parse_spec.c\
 pf_lltostr.c\
 pf_doubletostr.c\
 pf_utils.c\
+pf_utils2.c\
 ft_vprintf.c\
 ft_printf.c
 OBJ=$(SRC:.c=.o)
@@ -20,12 +21,11 @@ all: $(LIBFT) $(NAME)
 
 %.o: %.c ft_printf.h
 	gcc -c -Wall -Wextra -Werror -Ilibft $< -o $@ $(DEBUG)
+	ar rc $(NAME) $@
 
 $(NAME): $(OBJ)
-	ar rc $(NAME) $?
 
 $(LIBFT):
-	echo HERE
 	$(MAKE) -C libft/ d
 	cp $(LIBFT) $(NAME)
 

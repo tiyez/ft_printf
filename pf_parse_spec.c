@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/13 20:24:14 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 12:06:26 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,31 +32,31 @@ static	int	check_flag(t_pf_spec *spec, char c)
 	return (success);
 }
 
-static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va, int *w, int *p)
+static	int	check_flags(t_pf_spec *spec, t_vs *vs, va_list va)
 {
 	int	error;
 
 	while ((error = check_flag(spec, ft_vs(vs, 0))) > 0)
 		ft_vsinc(vs, 1);
-	if (error >= 0)
+	if (error >= 0 && (ft_vs(vs, 0) == '*' || IS_DIGIT(ft_vs(vs, 0))))
 	{
-		if (ft_vs(vs, 0) == '*' || IS_DIGIT(ft_vs(vs, 0)))
-		{
-			spec->flags |= PF_FLAG_WIDTH;
-			*w = ft_vsincif(vs, '*', 1) ? va_arg(va, int) : 
-				(ft_vs_read_uint(vs, &spec->width), (int)spec->width);
-			spec->flags |= *w < 0 ? PF_FLAG_MINUS : 0;
-			spec->width = *w < 0 ? -*w : *w;
-		}
-		if (ft_vsincif(vs, '.', 1))
-		{
-			spec->flags |= PF_FLAG_PRECISION;
-			*p = ft_vsincif(vs, '*', 1) ? va_arg(va, int) :
-				(ft_vs_read_uint(vs, &spec->precision), (int)spec->precision);
-			if (*p < 0)
-				spec->flags &= ~(PF_FLAG_PRECISION);
-			spec->precision = *p < 0 ? -*p : *p;
-		}
+		spec->flags |= PF_FLAG_WIDTH;
+		if (ft_vsincif(vs, '*', 1))
+			spec->width = va_arg(va, int);
+		else
+			ft_vs_read_uint(vs, (t_uint *)&spec->width);
+		spec->flags |= spec->width < 0 ? PF_FLAG_MINUS : 0;
+		spec->width = spec->width < 0 ? -spec->width : spec->width;
+	}
+	if (error >= 0 && ft_vsincif(vs, '.', 1))
+	{
+		spec->flags |= PF_FLAG_PRECISION;
+		if (ft_vsincif(vs, '*', 1))
+			spec->precision = va_arg(va, int);
+		else
+			ft_vs_read_uint(vs, (t_uint *)&spec->precision);
+		spec->flags &= spec->precision < 0 ? ~(PF_FLAG_PRECISION) : 0xFFFFFFFF;
+		spec->precision = FT_ABS(spec->precision);
 	}
 	return (error < 0 ? 0 : 1);
 }
@@ -109,15 +109,13 @@ t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 {
 	t_pf_spec	spec;
 	int			success;
-	int			w;
-	int			p;
 
 	spec.flags = 0;
 	spec.size = 0;
 	spec.type = PF_TYPE_NONE;
 	spec.width = 0;
 	spec.precision = 0;
-	success = check_flags(&spec, vs, va, &w, &p);
+	success = check_flags(&spec, vs, va);
 	success = success && check_size(&spec, vs);
 	success = success && check_type(&spec, vs);
 	if (!(spec.flags & PF_FLAG_PRECISION) && PF_IS_DOUBLE(spec.type))
