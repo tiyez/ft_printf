@@ -6,7 +6,7 @@
 /*   By: jsandsla <jsandsla@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/04 14:48:12 by jsandsla          #+#    #+#             */
-/*   Updated: 2020/11/24 12:06:26 by jsandsla         ###   ########.fr       */
+/*   Updated: 2020/11/24 13:35:27 by jsandsla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,26 +84,36 @@ static	int	check_size(t_pf_spec *spec, t_vs *vs)
 	return (1);
 }
 
-#define CHECK(c,f) if (ft_vsincif(vs, c, 1)) spec->type = PF_TYPE_##f; else
-#define COMPOSER(c) c('d',D)c('i',I)c('o',O)c('u',U)c('x',X)c('X',BIGX)c('f',F)
-#define COMPOSER2(c) c('F',BIGF)c('e',E)c('E',BIGE)c('g',G)c('G',BIGG)c('a',A)
-#define COMPOSER3(c) c('A',BIGA)c('c',C)c('s',S)c('p',P)c('n',N)c('%',PERCENT)
-#define COMPOSER0(c) COMPOSER(c)COMPOSER2(c)COMPOSER3(c) error = 0
+static	char	g_type_table[][2] =
+{
+	{'d', PF_TYPE_D}, {'i', PF_TYPE_I}, {'o', PF_TYPE_O}, {'x', PF_TYPE_X},
+	{'X', PF_TYPE_BIGX}, {'f', PF_TYPE_F}, {'F', PF_TYPE_BIGF},
+	{'e', PF_TYPE_E}, {'E', PF_TYPE_BIGE}, {'g', PF_TYPE_G},
+	{'G', PF_TYPE_BIGG}, {'a', PF_TYPE_A}, {'A', PF_TYPE_BIGA},
+	{'c', PF_TYPE_C}, {'s', PF_TYPE_S}, {'p', PF_TYPE_P},
+	{'n', PF_TYPE_N}, {'%', PF_TYPE_PERCENT}
+};
 
 static	int	check_type(t_pf_spec *spec, t_vs *vs)
 {
-	int	error;
+	int		success;
+	size_t	array_count;
+	size_t	i;
 
-	error = 1;
-	COMPOSER0(CHECK);
-	return (error);
+	array_count = sizeof(g_type_table) / sizeof(g_type_table[0]);
+	i = 0;
+	success = 0;
+	while (!success && i < array_count)
+	{
+		if (ft_vsincif(vs, g_type_table[i][0], 1))
+		{
+			spec->type = g_type_table[i][1];
+			success = 1;
+		}
+		i += 1;
+	}
+	return (success);
 }
-
-#undef CHECK
-#undef COMPOSER
-#undef COMPOSER2
-#undef COMPOSER3
-#undef COMPOSER0
 
 t_pf_spec	pf_parse_spec(t_vs *vs, va_list va)
 {
