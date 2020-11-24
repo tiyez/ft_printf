@@ -25,8 +25,9 @@ $(NAME): $(OBJ)
 	ar rc $(NAME) $?
 
 $(LIBFT):
+	echo HERE
 	$(MAKE) -C libft/ d
-	ar rc $(NAME) libft/*.o
+	cp $(LIBFT) $(NAME)
 
 clean:
 	rm -rf $(OBJ)
@@ -36,7 +37,7 @@ fclean: clean
 	rm -rf $(NAME)
 	$(MAKE) -C libft/ fclean
 
-test: $(NAME)
+test: all
 	gcc -I. -Ilibft test.c libftprintf.a -g
 	./a.out
 
