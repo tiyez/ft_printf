@@ -1,7 +1,5 @@
 # ft_printf
 
-### Grade: _113_
-
 Conversions supported: cspdiuxX%nfFeE
 
 Flags supported: -0*.*# +
